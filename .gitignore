@@ -1,0 +1,10 @@
+# Ignore log and temporary files
+*.log
+*.tmp
+*.vcd
+*.out
+
+# Ignore tool-generated folders
+/temp/
+/output/
+/runs/
