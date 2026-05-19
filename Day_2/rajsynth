@@ -1,0 +1,55 @@
+#!/bin/tcsh -f
+
+# -------------------------------------------------------------------------
+# RAJSYNTH: Automated RTL-to-GDS Synthesis Wrapper
+# -------------------------------------------------------------------------
+echo ""
+echo "************************************************************************"
+echo "* ____      _        _  _____ __   __ _   _  _____  _   _             *"
+echo "* |  _ \    / \      | |/ ____|\ \ / /| \ | ||_   _|| | | |            *"
+echo "* | |_) |  / _ \ _   | |\___ \  \ V / |  \| |  | |  | |_| |            *"
+echo "* |  _ <  / ___ \ |__| | ____) |  | |  | |\  |  | |  |  _  |            *"
+echo "* |_| \_\/_/   \_\____/ |_____/   |_|  |_| \_|  |_|  |_| |_|            *"
+echo "* *"
+echo "* An automated UI that takes RTL netlist & SDC constraints as input    *"
+echo "* and generates a synthesized netlist & pre-layout timing reports.     *"
+echo "* Uses Yosys and Opentimer for the synthesis flow.                     *"
+echo "* *"
+echo "* Developed and Maintained by Joshi Raj Maheshkumar (BVM Engineering)  *"
+echo "* For any queries, please drop a mail to rajjoshi1220@gmail.com        *"
+echo "************************************************************************"
+echo ""
+
+set my_work_dir = `pwd`
+
+# -------------------------------------------------------------------------
+# Tool Initialization & Argument Checks
+# -------------------------------------------------------------------------
+
+if ($#argv != 1) then
+    echo "Info: Please provide the csv file"
+    exit 1
+endif
+
+if (! -f $argv[1] || $argv[1] == "-help") then
+    if ($argv[1] != "-help") then
+        echo "Error: Cannot find csv file $argv[1]. Exiting..."
+        exit 1
+    else
+        echo "USAGE: ./rajsynth <csv file>"
+        echo ""
+        echo "Where <csv file> consists of 2 columns. Keywords are case-sensitive."
+        echo ""
+        echo "<Design Name>       : Name of the top level module"
+        echo "<Output Directory>  : Name of directory to dump synthesis results"
+        echo "<Netlist Directory> : Directory containing all RTL netlists"
+        echo "<Early Library Path>: File path of the early cell library for STA"
+        echo "<Late Library Path> : File path of the late cell library for STA"
+        echo "<Constraints file>  : CSV file path of constraints for STA"
+        exit 1
+    endif
+else
+    # Correct order: Confirm success, THEN trigger the TCL script
+    echo "Success: Design configuration found. Initializing rajsynth flow..."
+    tclsh rajsynth.tcl $argv[1]
+endif
