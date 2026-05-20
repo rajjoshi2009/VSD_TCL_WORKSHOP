@@ -209,7 +209,7 @@ _Final Closed-Loop Pipeline Execution and Prelayout Timing Results Table:_
 
 * **Project Automator:** Joshi Raj Maheshkumar
 * **Academic Institution:** Birla Vishvakarma Mahavidyalaya (BVM Engineering College)
-* ** Specialisation Track:** B.Tech Honours in VLSI Design and Testing
+* **Specialisation Track:** B.Tech Honours in VLSI Design and Testing
 * **Technical Focus Areas:** RTL Coding (Verilog), EDA Flow Automation (Tcl/Scripting), Synthesis & Static Timing Analysis (STA)
 * **Professional Contact:** rajjoshi1220@gmail.com
 * **GitHub Project Repository:** [VSD_TCL_WORKSHOP](https://github.com/rajjoshi2009/VSD_TCL_WORKSHOP)
