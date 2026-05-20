@@ -430,7 +430,7 @@ set fid [open $filename r]
 close $fid
 close $output
 
-puts "\nInfo: Please find the synthesized netlist for $DesignName at below path. You can use this netlist for STA or PNR"
+puts "\nInfo: Please find the syntheized netlist for $DesignName at below path. You can use this netlist for STA or PNR"
 puts "\n$OutputDirectory/$DesignName.final.synth.v"
 
 #-----------------------------------------------------------------------------------------------------------------------#
@@ -445,20 +445,21 @@ source procs/reopenStdout.proc
 source procs/set_num_threads.proc
 reopenStdout $OutputDirectory/$DesignName.conf
 set_multi_cpu_usage -localCpu 4
-return
+
 
 source procs/read_lib.proc
-read_lib -early /home/anoushka-tripathi/TCL_WORKSHOP/monksynth/osu018_stdcells.lib
+read_lib -early /home/vsduser/vsdsynth/osu018_stdcells.lib
+read_lib -late /home/vsduser/vsdsynth/osu018_stdcells.lib
 
-read_lib -late /home/anoushka-tripathi/TCL_WORKSHOP/monksynth/osu018_stdcells.lib
 
 source procs/read_verilog.proc
 read_verilog $OutputDirectory/$DesignName.final.synth.v
 
-
 source procs/read_sdc.proc
 read_sdc $OutputDirectory/$DesignName.sdc
 reopenStdout /dev/tty
+
+
 
 if {$enable_prelayout_timing == 1} {
 	puts "\nInfo: enable_prelayout_timing is $enable_prelayout_timing. Enabling zero-wire load parasitics"
@@ -489,13 +490,13 @@ puts $conf_file "report_worst_paths -numPaths 10000 "
 close $conf_file
 
 
-set time_elapsed_in_us [time {exec /home/anoushka-tripathi/OpenTimer-1.0.5/bin/OpenTimer < $OutputDirectory/$DesignName.conf >& $OutputDirectory/$DesignName.results}]
+set time_elapsed_in_us [time {exec  /usr/local/bin/OpenTimer < $OutputDirectory/$DesignName.conf >& $OutputDirectory/$DesignName.results}]
 set time_elapsed_in_sec "[expr {[lindex $time_elapsed_in_us 0]/100000}] sec"
 puts "\nInfo: STA finished in $time_elapsed_in_sec seconds"
 puts "\nInfo: Refer to $OutputDirectory/$DesignName.results for warning and errors"
 
 puts "tcl_precision is $tcl_precision"
-#return
+
 
 #---------------find WNS using RAT-------------------------#
 set worst_RAT_slack "-"
@@ -512,7 +513,7 @@ while {[gets $report_file line] != -1} {
 	}
 }
 close $report_file
-#return
+
 
 #--------------------------fine number of output violation------------#
 set report_file [open $OutputDirectory/$DesignName.results r]
@@ -529,7 +530,6 @@ close $report_file
 set worst_negative_setup_slack "-"
 set report_file [open $OutputDirectory/$DesignName.results r]
 set pattern {Setup}
-puts "pattern is $pattern"
 while {[gets $report_file line] != -1} {
         if {[regexp $pattern $line]} {
                 set worst_negative_setup_slack "[expr {[lindex $line 3]/1000}]ns"
@@ -554,7 +554,7 @@ close $report_file
 set worst_negative_hold_slack "-"
 set report_file [open $OutputDirectory/$DesignName.results r]
 set pattern {Hold}
-puts "pattern is $pattern"
+
 while {[gets $report_file line] != -1} {
         if {[regexp $pattern $line]} {
                 set worst_negative_hold_slack "[expr {[lindex $line 3]/1000}]ns"
@@ -578,7 +578,6 @@ close $report_file
 
 #---------------find number of instance---------------------------#
 set pattern {Num of gates}
-puts "pattern is $pattern"
 set report_file [open $OutputDirectory/$DesignName.results r]
 while {[gets $report_file line] != -1} {
         if {[regexp $pattern $line]} {
@@ -590,8 +589,7 @@ while {[gets $report_file line] != -1} {
 }
 close $report_file
 
-set Instance_count "$Instance_count PS"
-set time_elapsed_in_sec "$time_elapsed_in_sec PS"
+
 puts "DesignName is \{$DesignName\}"
 puts "time_elapsed_in_sec is \{$time_elapsed_in_sec\}"
 puts "Instance_count is \{$Instance_count\}"
@@ -601,8 +599,10 @@ puts "worst_negative_hold_slack is \{$worst_negative_hold_slack\}"
 puts "Number_of_hold_violations is \{$Number_of_hold_violations\}"
 puts "worst_RAT_slack is \{$worst_RAT_slack\}"
 puts "Number_output_violations is \{$Number_of_output_violations\}"
-#return
+
 puts "\n"
+
+
 puts "                                 **********PRELAYOUT TIMING RESULTS**********                                                      "
 set formatStr {%15s%15s%15s%15s%15s%15s%15s%15s%15s}
 
