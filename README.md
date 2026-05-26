@@ -144,8 +144,76 @@ Synthesised Mapped Technology Netlist Primitives:
 By using the Graphviz dot engine, the framework lets you visually inspect the finalised technology cell interconnections, showing exactly how individual logic gates and positive-edge D-Flip-Flops (`DFFPOSX1`) are connected.
 
 Finalised Gate-Level Schematic (via xdot Viewer Engine):
-
 <img width="1920" height="1117" alt="memorysdiagramd_day4" src="https://github.com/user-attachments/assets/a837a64d-0c0b-4308-8922-50b0afe4f2ea" />
+
+
+
+## DAY 5: Automated Static Timing Analysis (STA) & Closed-Loop QoR Generation
+
+### Objective
+The final stage of the `rajsynth` framework automates the generation of structural tool execution configurations (`.conf`), validates architectural hierarchies, generates production-ready synthesis netlists for Place and Route (PnR), and drives the **OpenTimer Engine** to extract performance margins.
+
+
+### 1. Pre-Flight Proactive Error Handling (Hierarchy Validation)
+To showcase the robustness of the framework's verification loops, the automated script was tested against a broken structural dependency module path (`omsp_clock_module_vsd`). The Tcl interpreter successfully caught the fault, logged an explicit error, flagged a `FAIL` status, and halted the pipeline before wasting compute resources on a corrupt compilation:
+
+```text
+Checking hierarchy.....
+err flag is 1
+Error: module 'omsp_clock_module_vsd' is not part of the design openMSP430.
+Info: Hierarchy check FAIL
+```
+<img width="1920" height="1103" alt="synthesis_failed_day5" src="https://github.com/user-attachments/assets/0e7baad8-447d-48f6-8dc2-fabdada0d797" />
+---
+
+### 2. Successful Synthesis Execution Pass
+After correcting the RTL module instances, the validation loop re-evaluated the system paths to print an unblocked `PASS` notification. The pipeline automatically generated the complete backend Yosys script and compiled the behavioural Verilog files into an optimised gate-level netlist structure:
+
+_Corrected Logic Tree Clearing the Verification Loop and Finalising Synthesis:_
+
+<img width="1920" height="1103" alt="day_5_success_synthesis_for_pnr" src="https://github.com/user-attachments/assets/4e6bab22-11f5-4be6-a3f9-cffa4c31d0e4" />
+
+_Production-Ready Structural Netlist Output (`openMSP430.final.synth.v`):_
+<img width="1920" height="1103" alt="synth_v_day5" src="https://github.com/user-attachments/assets/6b90d8be-74eb-4ce8-ad5d-1853c6f8bf1b" />
+
+---
+
+### 3. OpenTimer Configuration Logic (`.conf`)
+To transition the design from structural logic mapping to performance verification, the framework automatically generates a dedicated OpenTimer configuration control file (`openMSP430.conf`). This control step links the multi-threaded calculation properties (`-localCpu 4`) with the early and late standard cell technology libraries (`osu018_stdcells.lib`) to prepare the timing graph grid.
+
+_Auto-Generated OpenTimer Multi-Thread Configuration File inside Vim:_
+<img width="1920" height="1103" alt="conf_file_day5" src="https://github.com/user-attachments/assets/ce758b33-5f1d-416f-9b0d-80d9117a2067" />
+
+### 4. Final Timing Performance Quality of Results (QoR)
+The framework calls the OpenTimer engine via system execution channels, traces data propagation paths across cell delays, evaluates parasitic conditions, and dumps a comprehensive performance summary reporting slack metrics across setup, hold, and output constraints:
+
+_Final Closed-Loop Pipeline Execution and Prelayout Timing Results Table:_
+
+<img width="1920" height="1103" alt="full_output_day5" src="https://github.com/user-attachments/assets/c6db4d9c-fbbb-4480-9475-c69c1563b0fa" />
+
+
+### 📊 Final Timing Performance Report Matrix
+| Core Performance Parameter | Framework Analytics Status |
+| :--- | :--- |
+| **Design Target Name** | openMSP430 Core Engine |
+| **Total Standard Cell Count** | 7,477 Instances |
+| **Timing Computation Speed** | 2 Seconds |
+| **Worst Negative Setup Slack (WNS)** | -10.771179 ns (1 Violation) |
+| **Worst Negative Hold Slack (WNS)** | 0.00 ns (PASSED — 0 Violations) |
+| **Worst Output Pin Slack (RAT)** | -0.179107 ns |
+| **Total Output Pin Violations** | 9,999 (Default Boundary Limit) |
+
+---
+
+## 👨‍💻 Developer Profile
+
+* **Project Automator:** Joshi Raj Maheshkumar
+* **Academic Institution:** Birla Vishvakarma Mahavidyalaya (BVM Engineering College)
+* **Specialisation Track:** B.Tech Honours in VLSI Design and Testing
+* **Technical Focus Areas:** RTL Coding (Verilog), EDA Flow Automation (Tcl/Scripting), Synthesis & Static Timing Analysis (STA)
+* **Professional Contact:** rajjoshi1220@gmail.com
+* **GitHub Project Repository:** [VSD_TCL_WORKSHOP](https://github.com/rajjoshi2009/VSD_TCL_WORKSHOP)
+
 
 
 
