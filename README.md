@@ -205,6 +205,9 @@ _Final Closed-Loop Pipeline Execution and Prelayout Timing Results Table:_
 
 ---
 
+###Certificate
+[View my VSD TCL Workshop Certificate](Raj%20Joshi-certificate.pdf)
+
 ## 👨‍💻 Developer Profile
 
 * **Project Automator:** Joshi Raj Maheshkumar
